@@ -40,7 +40,7 @@ echo Installerar Google Chrome...
 winget install --id Google.Chrome --silent --accept-source-agreements --accept-package-agreements
 
 echo Installerar Adobe Acrobat Reader...
-winget install --id Adobe.Acrobat.Reader.64bit --silent --accept-source-agreements --accept-package-agreements
+winget install --id Adobe.Acrobat.Reader.64-bit --silent --accept-source-agreements --accept-package-agreements
 
 :: ==============================================================================
 :: 3. TA BORT UTDRAG AV SPRÅKPAKET FÖR M365 & ONENOTE VIA POWERSHELL-ANROP
