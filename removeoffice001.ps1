@@ -1,3 +1,6 @@
+# För att köra detta på en nyinstallerad dator så måste du starta Kommandotolken(CMD) som administratör och sedan skriva:
+# powershell -ExecutionPolicy Bypass -File "C:\Sökväg\Till\DittSkript.ps1"
+
 # Sökvägar i registret där Office-komponenter listas
 $RegistryPaths = @(
     "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*",
