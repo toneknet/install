@@ -1,40 +1,51 @@
-# Definiera sökvägar i registret där installerade program listas
+# Sökvägar i registret där Office-komponenter listas
 $RegistryPaths = @(
     "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*",
     "HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*"
 )
 
-# Sök efter alla Office-paket som inte är sv-se
-$OfficeApps = Get-ItemProperty $RegistryPaths | Where-Object {
-    $_.DisplayName -like "*Microsoft 365 Apps for enterprise*" -and 
+# Sök efter alla registerposter som tillhör Office ClickToRun och inte är svenska
+$OfficeComponents = Get-ItemProperty $RegistryPaths | Where-Object {
+    ($_.DisplayName -like "*Microsoft 365*" -or $_.UninstallString -like "*OfficeClickToRun.exe*") -and
     $_.DisplayName -notlike "*sv-se*" -and
-    $_.UninstallString -like "*OfficeC2RClient.exe*"
+    $_.UninstallString -notlike "*culture=sv-se*"
 }
 
-if ($OfficeApps) {
-    foreach ($App in $OfficeApps) {
-        Write-Host "Avinstallerar språkversion: $($App.DisplayName)" -ForegroundColor Cyan
+if ($OfficeComponents) {
+    foreach ($Comp in $OfficeComponents) {
+        Write-Host "Hittade komponent: $($Comp.DisplayName)" -ForegroundColor Cyan
         
-        # Extrahera sökvägen till OfficeC2RClient.exe från registersträngen
-        if ($App.UninstallString -match '"([^"]+)"') {
-            $C2RClientPath = $Matches[1]
+        # Sökvägen till avinstalleraren är alltid densamma för ClickToRun
+        $C2RPath = "C:\Program Files\Common Files\Microsoft Shared\ClickToRun\OfficeClickToRun.exe"
+        
+        if (Test-Path $C2RPath) {
+            # Extrahera eller bygg argumenten baserat på vad som finns i registret
+            if ($Comp.UninstallString -match 'productstoremove=([^ ]+)') {
+                $ProductToRemove = $Matches[1]
+                # Kontrollera extra noga så vi inte avinstallerar sv-se av misstag
+                if ($ProductToRemove -like "*sv-se*") { continue }
+                
+                # Bygg de korrekta, dolda argumenten för just detta språkpaket
+                $Arguments = "scenario=install scenariosubtype=uninstall sourcetype=None productstoremove=$ProductToRemove DisplayLevel=False forceappshutdown=True"
+            } else {
+                # Fallback om strängen ser annorlunda ut
+                $Arguments = "scenario=install scenariosubtype=uninstall productreleaseid=O365ProPlusRetail DisplayLevel=False forceappshutdown=True"
+            }
+
+            Write-Host "Avinstallerar språkversion med argument: $Arguments" -ForegroundColor Yellow
+            
+            # Starta den tysta avinstallationen och vänta tills den är helt klar
+            # $Process = Start-Process -FilePath $C2RPath -ArgumentList $Arguments -Wait -NoNewWindow -PassThru
+            
+            if ($Process.ExitCode -eq 0) {
+                Write-Host "Borttagning lyckades!" -ForegroundColor Green
+            } else {
+                Write-Host "Avinstallationen avslutades med kod: $($Process.ExitCode)" -ForegroundColor Red
+            }
         } else {
-            $C2RClientPath = $App.UninstallString.Split(" ")[0]
+            Write-Host "Kunde inte hitta OfficeClickToRun.exe på standardplatsen." -ForegroundColor Red
         }
-
-        # Skapa tysta argument för ClickToRun-avinstalleraren
-        $Arguments = "scenario=install scenariosubtype=uninstall productreleaseid=O365ProPlusRetail displaylevel=False forceappshutdown=True"
-        
-        # Om registret innehåller ett specifikt språk-ID (t.ex. en-us, fr-fr), lägg till det
-        if ($App.PSChildName -match 'O365ProPlusRetail - (\w{2}-\w{2})') {
-            $Lang = $Matches[1]
-            $Arguments += " culture=$Lang"
-        }
-
-        # Starta avinstallationen i bakgrunden och vänta tills den är klar
-        Start-Process -FilePath $C2RClientPath -ArgumentList $Arguments -Wait -NoNewWindow
-        Write-Host "Klar med avinstallationen för denna språkversion." -ForegroundColor Green
     }
 } else {
-    Write-Host "Inga utländska språkversioner av Microsoft 365 Apps for enterprise hittades." -ForegroundColor Yellow
+    Write-Host "Inga utländska Office-komponenter eller språkpaket hittades." -ForegroundColor Yellow
 }
