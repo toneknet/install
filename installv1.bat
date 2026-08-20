@@ -37,10 +37,10 @@ echo [OK] Winget fungerar korrekt.
 :: ==============================================================================
 echo.
 echo Installerar Google Chrome...
-winget install --id Google.Chrome --silent --accept-source-agreements --accept-package-agreements
+winget install --id Google.Chrome --silent --accept-source-agreements --accept-package-agreements --source winget
 
 echo Installerar Adobe Acrobat Reader...
-winget install --id Adobe.Acrobat.Reader.64-bit --silent --accept-source-agreements --accept-package-agreements
+winget install --id Adobe.Acrobat.Reader.64-bit --silent --accept-source-agreements --accept-package-agreements --source winget
 
 :: ==============================================================================
 :: 3. TA BORT UTDRAG AV SPRÅKPAKET FÖR M365 & ONENOTE VIA POWERSHELL-ANROP
@@ -48,20 +48,20 @@ winget install --id Adobe.Acrobat.Reader.64-bit --silent --accept-source-agreeme
 echo.
 echo Rensar språkpaket för Microsoft 365 och OneNote (behåller sv-se)...
 :: Eftersom batch inte kan loopa registret effektivt anropas en snabb inline PowerShell-rad
-powershell -NoProfile -Command ^
-    "$O365Reg = 'HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\Configuration';" ^
-    "if (Test-Path $O365Reg) {" ^
-    "  $langs = (Get-ItemProperty $O365Reg).ProductReleaseCultures -split ',';" ^
-    "  $rem = ($langs | Where-Object { $_ -ne 'sv-se' -and $_ -ne '' }) -join ',';" ^
-    "  if ($rem) {" ^
-    "    New-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\Updates' -Name 'VersionedCulturesToRemoveAsCSV' -Value $rem -Force | Out-Null;" ^
-    "    $c2r = \"$env:CommonProgramFiles\Microsoft Shared\ClickToRun\OfficeC2RClient.exe\";" ^
-    "    if (Test-Path $c2r) { Start-Process $c2r -ArgumentList '/update user displaylevel=false forceappshutdown=true' -Wait }" ^
-    "  }" ^
-    "}"
+rem powershell -NoProfile -Command ^
+rem    "$O365Reg = 'HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\Configuration';" ^
+rem    "if (Test-Path $O365Reg) {" ^
+rem    "  $langs = (Get-ItemProperty $O365Reg).ProductReleaseCultures -split ',';" ^
+rem    "  $rem = ($langs | Where-Object { $_ -ne 'sv-se' -and $_ -ne '' }) -join ',';" ^
+rem    "  if ($rem) {" ^
+rem    "    New-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\Updates' -Name 'VersionedCulturesToRemoveAsCSV' -Value $rem -Force | Out-Null;" ^
+rem    "    $c2r = \"$env:CommonProgramFiles\Microsoft Shared\ClickToRun\OfficeC2RClient.exe\";" ^
+rem    "    if (Test-Path $c2r) { Start-Process $c2r -ArgumentList '/update user displaylevel=false forceappshutdown=true' -Wait }" ^
+rem    "  }" ^
+rem    "}"
     
-:: Tar bort Windows Store/UWP-språkvarianter för OneNote
-powershell -NoProfile -Command "Get-AppxPackage -AllUsers | Where-Name { $_.Name -like '*OneNote*' -and $_.Language -ne '' -and $_.Language -ne 'sv-SE' } | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue"
+rem :: Tar bort Windows Store/UWP-språkvarianter för OneNote
+rem powershell -NoProfile -Command "Get-AppxPackage -AllUsers | Where-Name { $_.Name -like '*OneNote*' -and $_.Language -ne '' -and $_.Language -ne 'sv-SE' } | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue"
 
 :: ==============================================================================
 :: 4. KONFIGURERA MICROSOFT EDGE VIA LOKALT REGISTER (INGEN DOMÄN KRÄVS)
