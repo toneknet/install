@@ -1,3 +1,6 @@
+#
+# Detta skript avinstallerar alla Office paket som INTE är svenska
+#
 # För att köra detta på en nyinstallerad dator så måste du starta Kommandotolken(CMD) som administratör och sedan skriva:
 # powershell -ExecutionPolicy Bypass -File "C:\Sökväg\Till\DittSkript.ps1"
 
