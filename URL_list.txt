@@ -1,0 +1,6 @@
+## Outlook Classic Download
+# Page
+https://support.microsoft.com/sv-se/outlook/install-or-reinstall-classic-outlook-on-a-windows-pc
+
+# Direct URL
+https://go.microsoft.com/fwlink/?linkid=2276500&clcid=0x41d
