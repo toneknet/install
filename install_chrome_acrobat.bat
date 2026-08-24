@@ -1,7 +1,7 @@
 rem @echo off
-:: ==============================================================================
-:: BATCH-SKRIPT FÖR APPLIKATIONSINSTALLATION OCH KONFIGURATION (LOKAL DATOR)
-:: ==============================================================================
+rem ==============================================================================
+rem BATCH-SKRIPT FÖR APPLIKATIONSINSTALLATION OCH KONFIGURATION (LOKAL DATOR)
+rem ==============================================================================
 chcp 65001 >nul
 echo Söker efter administratörsrättigheter...
 net session >nul 2>&1
@@ -12,9 +12,9 @@ if %errorLevel% neq 0 (
     exit /b
 )
 
-:: ==============================================================================
-:: 1. KONTROLLERA ATT WINGET FINNS OCH FUNGERAR
-:: ==============================================================================
+rem ==============================================================================
+rem 1. KONTROLLERA ATT WINGET FINNS OCH FUNGERAR
+rem ==============================================================================
 echo.
 echo Kontrollerar Winget...
 where winget >nul 2>&1
@@ -32,9 +32,9 @@ if %errorLevel% neq 0 (
 )
 echo [OK] Winget fungerar korrekt.
 
-:: ==============================================================================
-:: 2. INSTALLERA CHROME OCH ACROBAT READER
-:: ==============================================================================
+rem ==============================================================================
+rem 2. INSTALLERA CHROME OCH ACROBAT READER
+rem ==============================================================================
 echo.
 echo Installerar Google Chrome...
 winget install --id Google.Chrome --silent --accept-source-agreements --accept-package-agreements --source winget
