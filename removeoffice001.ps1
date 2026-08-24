@@ -41,7 +41,7 @@ if ($OfficeComponents) {
             Write-Host "Avinstallerar språkversion med argument: $Arguments" -ForegroundColor Yellow
             
             # Starta den tysta avinstallationen och vänta tills den är helt klar
-            # $Process = Start-Process -FilePath $C2RPath -ArgumentList $Arguments -Wait -NoNewWindow -PassThru
+            $Process = Start-Process -FilePath $C2RPath -ArgumentList $Arguments -Wait -NoNewWindow -PassThru
             
             if ($Process.ExitCode -eq 0) {
                 Write-Host "Borttagning lyckades!" -ForegroundColor Green
