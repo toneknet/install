@@ -4,3 +4,6 @@ https://support.microsoft.com/sv-se/outlook/install-or-reinstall-classic-outlook
 
 # Direct URL
 https://go.microsoft.com/fwlink/?linkid=2276500&clcid=0x41d
+
+## SonicWall NetExtender
+https://software.sonicwall.com/NetExtender/NXSetupU-x64-10.3.2.exe
