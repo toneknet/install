@@ -5,8 +5,8 @@
 # 3. Avinstallerar alla Office paket som INTE är svenska
 #
 # För att köra detta på en nyinstallerad dator så måste du starta Kommandotolken(CMD) eller Powershell (helst) som administratör och sedan skriva:
-# powershell -ExecutionPolicy Bypass -File "install.ps1"
-@echo off
+# powershell -ExecutionPolicy Bypass -File ".\install.ps1"
+#@echo off
 echo Installerar Google Chrome...
 winget install --id Google.Chrome --silent --accept-source-agreements --accept-package-agreements --source winget
 
