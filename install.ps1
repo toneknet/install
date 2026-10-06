@@ -3,17 +3,18 @@
 # 1. Installerar Google Chrome
 # 2. Installerar Acrobat Reader
 # 3. Avinstallerar alla Office paket som INTE är svenska
+# 4. Installerar office classic OM filen officesetup.exe finns i samma mapp
 #
 # För att köra detta på en nyinstallerad dator så måste du starta Kommandotolken(CMD) eller Powershell (helst) som administratör och sedan skriva:
 # powershell -ExecutionPolicy Bypass -File ".\install.ps1"
 #@echo off
-Write-Host "Installerar Google Chrome..." -ForegroundColor Magenta
+Write-Host "Installerar Google Chrome..." -ForegroundColor DarkGreen
 winget install --id Google.Chrome --silent --accept-source-agreements --accept-package-agreements --source winget
 
-Write-Host "Installerar Adobe Acrobat Reader..." -ForegroundColor Magenta
+Write-Host "Installerar Adobe Acrobat Reader..." -ForegroundColor DarkGreen
 winget install --id Adobe.Acrobat.Reader.64-bit --silent --accept-source-agreements --accept-package-agreements --source winget
 
-Write-Host "Avinstallerar Office for buiseness (ej sv-se)" -ForegroundColor Magenta
+Write-Host "Avinstallerar Office for buiseness (ej sv-se)" -ForegroundColor DarkGreen
 # Sökvägar i registret där Office-komponenter listas
 $RegistryPaths = @(
     "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*",
@@ -64,4 +65,23 @@ if ($OfficeComponents) {
     }
 } else {
     Write-Host "Inga utländska Office-komponenter eller språkpaket hittades." -ForegroundColor Yellow
+}
+
+
+# Kan tanka ner office här (SVENSK CLASSIC)
+Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2276500&clcid=0x41d" -OutFile "officesetup.exe"
+#Start-BitsTransfer -Source "https://go.microsoft.com/fwlink/?linkid=2276500&clcid=0x41d" -Destination "officesetup.exe"
+# Ange namnet på filen du letar efter
+$installer = ".\officesetup.exe"
+
+# Kontrollera om filen finns
+if (Test-Path -Path $installer) {
+    Write-Host "Installationsfilen hittades. Startar installationen..." -ForegroundColor Green
+    
+    # Kör installationen och vänta tills den är klar
+    Start-Process -FilePath $installer -ArgumentList "/configure configuration.xml" -Wait -NoNewWindow
+    
+    Write-Host "Installationen har slutförts." -ForegroundColor Green
+} else {
+    Write-Warning "Fel: Hittade inte filen $installer i den aktuella mappen."
 }
