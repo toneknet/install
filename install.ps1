@@ -71,15 +71,28 @@ if ($OfficeComponents) {
 # Kan tanka ner office här (SVENSK CLASSIC)
 Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2276500&clcid=0x41d" -OutFile "officesetup.exe"
 #Start-BitsTransfer -Source "https://go.microsoft.com/fwlink/?linkid=2276500&clcid=0x41d" -Destination "officesetup.exe"
+
 # Ange namnet på filen du letar efter
 $installer = ".\officesetup.exe"
 
 # Kontrollera om filen finns
 if (Test-Path -Path $installer) {
+# Fixa configuration.xml
+$xmlContent = @"
+<Display Level="None" AcceptEULA="TRUE" />
+"@
+    $xmlContent | Out-File -FilePath ".\configuration.xml" -Encoding utf8
+    
     Write-Host "Installationsfilen hittades. Startar installationen..." -ForegroundColor Green
     
     # Kör installationen och vänta tills den är klar
     Start-Process -FilePath $installer -ArgumentList "/configure configuration.xml" -Wait -NoNewWindow
+
+    # 4. Städa bort configuration.xml efteråt
+    if (Test-Path -Path ".\configuration.xml") {
+        Remove-Item -Path ".\configuration.xml" -Force
+        Write-Host "configuration.xml har tagits bort." -ForegroundColor Green
+    }
     
     Write-Host "Installationen har slutförts." -ForegroundColor Green
 } else {
