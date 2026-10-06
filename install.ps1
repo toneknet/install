@@ -7,13 +7,13 @@
 # För att köra detta på en nyinstallerad dator så måste du starta Kommandotolken(CMD) eller Powershell (helst) som administratör och sedan skriva:
 # powershell -ExecutionPolicy Bypass -File ".\install.ps1"
 #@echo off
-echo Installerar Google Chrome...
+Write-Host "Installerar Google Chrome..." -ForegroundColor Magenta
 winget install --id Google.Chrome --silent --accept-source-agreements --accept-package-agreements --source winget
 
-echo Installerar Adobe Acrobat Reader...
+Write-Host "Installerar Adobe Acrobat Reader..." -ForegroundColor Magenta
 winget install --id Adobe.Acrobat.Reader.64-bit --silent --accept-source-agreements --accept-package-agreements --source winget
 
-echo Avinstallerar Office for buiseness (ej sv-se)
+Write-Host "Avinstallerar Office for buiseness (ej sv-se)" -ForegroundColor Magenta
 # Sökvägar i registret där Office-komponenter listas
 $RegistryPaths = @(
     "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*",
